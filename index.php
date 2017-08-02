@@ -1,7 +1,6 @@
 <?php
-require 'models/model.php';
 
-ini_set('display_errors', 1);
+require 'models/model.php';
 
 $model = new Model();
 if (isset($_FILES['csv_file'])) {
@@ -12,7 +11,6 @@ if (isset($_FILES['csv_file'])) {
 }
 
 $tableData = $model->getData();
-
 ?>
 
 <html>
