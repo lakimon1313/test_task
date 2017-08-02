@@ -44,7 +44,7 @@ class Model
         $result = $whItems = [];
         while ($row = $data->fetch(PDO::FETCH_ASSOC)) {
 
-            // If we have already item with current product_id then just update the product quantity information and also write the warehouses of current product
+            // If we already have item with current product_id, then just update the product quantity information and also write the warehouses of current product
             if (key_exists($row['product_id'], $result)) {
                 $result[$row['product_id']]['quantity'] += $row['quantity'];
 
@@ -155,15 +155,15 @@ class Model
         // Main parse data
         $sqlData = "";
         foreach ($data as $key => $item) {
-            // We don`t need to write to DB scopes
+            // We don`t need write to DB scopes
             $item['product_name'] = str_replace('"', '', $item['product_name']);
 
-            // If product already exist in DB just get his ID
+            // If product already exist in DB - just get his ID
             $productKey = array_search($item['product_name'], $productsResult);
             if ($productKey !== false)
                 $productID = $productKey;
             else {
-            //If we have no such product - we just write his name to data, that we will insert later
+            //If we have no such product - we just write his name to data, that we will insert data to DB later
                 $productID = false;
                 $productsInsert[] = $item['product_name'];
             }
@@ -177,7 +177,7 @@ class Model
                 $warehousesInsert[] = $item['warehouse'];
             }
 
-            // If we have no productID or warehouseID then we cant insert current line to DB, so we just skipping current step
+            // If we have no productID or warehouseID then we cant insert current line to DB, so we will just skipp current step
             if ($productID === false || $warehouseID === false)
                 continue;
 

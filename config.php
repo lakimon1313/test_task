@@ -1,5 +1,6 @@
 <?php
 
+// MySql db connection config
 return [
     'mysql' => [
         'servername' => 'localhost',
