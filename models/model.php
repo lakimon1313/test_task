@@ -32,7 +32,7 @@ class Model
      */
     public function getData()
     {
-        // Get all rows from `wh_quantity` table for calculate quantity
+        // Get all rows from `wh_quantity` table to calculate quantity
         $sql = "SELECT p.id as product_id, wq.wh_id as wh_id, p.name as product_name, w.name as wh_name, quantity  FROM `wh_quantity` wq";
         $sql .= " LEFT JOIN  `product` p ON p.id=wq.product_id";
         $sql .= " LEFT JOIN `warehouse` w ON wq.wh_id=w.id";
@@ -51,7 +51,7 @@ class Model
                 // If product have current warehouse then just update quantity of that warehouse
                 if (isset($result[$row['product_id']]['warehouses']) && key_exists($row['wh_id'], $result[$row['product_id']]['warehouses'])) {
                     $result[$row['product_id']]['warehouses'][$row['wh_id']]['quantity'] += $row['quantity'];
-                // and if product have not yet current warehouse - add it quantity and name
+                // and if product has not current warehouse - add it quantity and name
                 } else {
                     $result[$row['product_id']]['warehouses'][$row['wh_id']] = [
                         'quantity' => $row['quantity'],
@@ -69,7 +69,7 @@ class Model
 
         }
 
-        // Parse every products warehouses. If warehouse has 0 or < 0 items - we don`t need to show this warehouse
+        // Parse every product`s warehouses. If warehouse has 0 or < 0 items - we don`t need to show this warehouse
         foreach ($result as $key => $item) {
 
             foreach ($item['warehouses'] as $wh) {
@@ -78,7 +78,7 @@ class Model
                     $result[$key]['wh_names'][] = $wh['wh_name'];
             }
 
-            // If product have no warehosuses - just unset him
+            // If product has no warehouses - just unset him
             if (empty($result[$key]['wh_names']))
                 unset($result[$key]);
 
@@ -95,7 +95,7 @@ class Model
     public function parseCSV()
     {
         $result = [];
-        // Read every line from file and write data to $result
+        // Read every line of the file and write data to $result
         if (($handle = fopen($_FILES['csv_file']['tmp_name'], 'r')) !== FALSE) {
             while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
                 $result[] = [
@@ -106,10 +106,10 @@ class Model
             }
             fclose($handle);
 
-            // Check if we have data so we can continue our script
+            // Check if we have data to continue our script
             if ($result)
                 $this->insert($result);
-            // And if not - show user error
+            // And if we don`t have - show an error to the user
             else
                 return ['error' => 'Вы загрузили пустой файл.'];
         }
@@ -119,7 +119,7 @@ class Model
 
     /**
      * Insert data to DB
-     * Method will parse all data, check if we already have Products & Warehouses in DB and if not - add it
+     * Method will parse all the data and will check if we already have Products & Warehouses in DB and if not - add it
      *
      * @param $data
      */
@@ -155,7 +155,7 @@ class Model
         // Main parse data
         $sqlData = "";
         foreach ($data as $key => $item) {
-            // We don`t need write to DB scopes
+            // We don`t need to write to DB scopes
             $item['product_name'] = str_replace('"', '', $item['product_name']);
 
             // If product already exist in DB - just get his ID
@@ -163,12 +163,12 @@ class Model
             if ($productKey !== false)
                 $productID = $productKey;
             else {
-            //If we have no such product - we just write his name to data, that we will insert data to DB later
+            // If we have no such product - we just write his name to data, which we will insert to DB later
                 $productID = false;
                 $productsInsert[] = $item['product_name'];
             }
 
-            // Same actions with products above
+            // The same actions as with the products above
             $warehouseKey = array_search($item['warehouse'], $warehousesResult);
             if ($warehouseKey !== false)
                 $warehouseID = $warehouseKey;
@@ -177,7 +177,7 @@ class Model
                 $warehousesInsert[] = $item['warehouse'];
             }
 
-            // If we have no productID or warehouseID then we cant insert current line to DB, so we will just skipp current step
+            // If we have no productID or warehouseID then we can`t insert current line to DB, so we will just skip current step
             if ($productID === false || $warehouseID === false)
                 continue;
 
@@ -186,7 +186,7 @@ class Model
             if (next($data))
                 $sqlData .= ',';
 
-            // If we successfully added current line to sql string, we just removing current item from data
+            // If we successfully added current line to sql string, we just remove current item from data
             unset($data[$key]);
         }
 
@@ -196,7 +196,7 @@ class Model
             $this->_conn->prepare($sql)->execute();
         }
 
-        // Flag for checking if we need to start curret method "insert" again
+        // Flag that helps us to understand if we have to start current method "insert" again
         $flag = false;
         if (isset($productsInsert)) {
             $flag = true;
@@ -233,7 +233,7 @@ class Model
         }
 
         // if new products or warehouses were added, we should start current script again
-        // Also check if data is not empty, so we know for sure that we still have no parsed $data
+        // Also check if data is not empty, to know for sure that we have no parsed $data
         if ($flag && !empty($data))
             $this->insert($data);
     }
