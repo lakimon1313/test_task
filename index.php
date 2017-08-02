@@ -20,7 +20,7 @@ $tableData = $model->getData();
     <link rel="stylesheet" href="assets/bootstrap.min.css">
 </head>
 <body>
-<div class="container" style="padding-top: 40px">
+<div class="container" style="margin-top: 40px">
     <?php if (isset($error)) { ?>
         <h1 class="bg-danger"><?= $error ?></h1>
     <?php } ?>
@@ -46,7 +46,7 @@ $tableData = $model->getData();
                 <tr>
                     <td><?= $item['product_name'] ?></td>
                     <td><?= $item['quantity'] ?></td>
-                    <td><?= $item['wh_name'] ?></td>
+                    <td><?= implode(',', $item['wh_names']) ?></td>
                 </tr>
             <?php } ?>
             </tbody>

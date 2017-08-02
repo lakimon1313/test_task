@@ -5,6 +5,6 @@ return [
         'servername' => 'localhost',
         'db_name' => 'test_task',
         'username' => 'root',
-        'password' => ''
+        'password' => '1'
     ]
 ];
